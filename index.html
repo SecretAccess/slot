@@ -400,19 +400,21 @@
         console.log('GOGO.png is now hidden (silhouette restored)');
       }
 
-      // 点滅効果
+      // 点滅効果（ここではブリンク開始を0.5秒遅延）
       function blinkScreen(times, callback) {
-        const overlay = document.getElementById('blinkOverlay');
-        let count = 0;
-        const interval = setInterval(() => {
-          overlay.style.opacity = (overlay.style.opacity == 0 ? 1 : 0);
-          count++;
-          if (count >= times * 2) {
-            clearInterval(interval);
-            overlay.style.opacity = 0;
-            if (callback) callback();
-          }
-        }, 150);
+        setTimeout(function(){
+          const overlay = document.getElementById('blinkOverlay');
+          let count = 0;
+          const interval = setInterval(() => {
+            overlay.style.opacity = (overlay.style.opacity == 0 ? 1 : 0);
+            count++;
+            if (count >= times * 2) {
+              clearInterval(interval);
+              overlay.style.opacity = 0;
+              if (callback) callback();
+            }
+          }, 150);
+        }, 500); // 0.5秒の遅延
       }
 
       // 自動逆回転：各リールをゆっくり逆回転させ、最終的に7.pngにそろえる
@@ -473,14 +475,14 @@
             finalResults = ['0.png', '3.png', '6.png'];
             console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
             showGogo();
-            // この場合は勝利アクションはGOGO表示のみ（おめでとうポップは表示しない）
+            // 勝利アクションは GOGO 表示のみ（おめでとうポップは出さない）
           } else {
             // 負け組：安全な組み合わせに固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
             console.log('Draw result: Losing combination');
           }
         } else {
-          // GOGO表示中：40%の確率でpierrotイベントを発生させる
+          // GOGO表示中：40%の確率で pierrot イベントを発生
           if (rand < 0.4) {
             finalResults = ['pierrot.png', 'pierrot.png', 'pierrot.png'];
             console.log('Draw result: Pierrot event triggered');
@@ -567,7 +569,7 @@
         const [r1, r2, r3] = finalResults;
         console.log('Checking result:', finalResults);
         if (!isGogoActive) {
-          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみでポップアップは出さない
+          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみ（ポップアップは出さない）
           if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
             displayMessage.textContent = "当たり";
           } else {
@@ -578,6 +580,7 @@
         // GOGO状態中の場合
         if (r1 === 'pierrot.png' && r2 === 'pierrot.png' && r3 === 'pierrot.png') {
           displayMessage.textContent = "当たり";
+          // pierrotイベント発生後、0.5秒遅延して点滅開始
           blinkScreen(2, function(){
             autoReverseSpin(function(){
               displayMessage.textContent = "";
@@ -586,14 +589,8 @@
           });
           return;
         }
-        // 万が一7.pngが揃った場合（通常は発生しない）
-        if (r1 === '7.png' && r2 === '7.png' && r3 === '7.png') {
-          displayMessage.textContent = "当たり";
-          showResultModal();
-          hideGogo();
-        } else {
-          displayMessage.textContent = "6.11％の確率で何かが起こる!!";
-        }
+        // それ以外は負け組
+        displayMessage.textContent = "6.11％の確率で何かが起こる!!";
       }
 
       // --- イベントリスナー ---

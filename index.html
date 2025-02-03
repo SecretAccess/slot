@@ -42,6 +42,7 @@
     /* 回転数のみ中央揃え。当選回数は非表示 */
     #spinCountContainer { display: flex; justify-content: center; }
     #spinCountText { font-size: 1.2em; }
+    /* 当選回数は非表示 */
     #jackpotCountText { display: none; }
     #displayMessage { min-height: 20px; font-size: 1em; margin-top: 5px; }
     /* --- 本体下部：レバー＆リール --- */
@@ -138,7 +139,7 @@
       margin-top: 10px; font-size: 0.95em; line-height: 1.4em;
     }
     #helpModal .instructions img {
-      vertical-align: middle; height: 1.5em; margin: 0 0.1em;
+      vertical-align: middle; height: 1.2em; margin: 0 0.2em;
     }
     /* レスポンシブ */
     @media (max-width: 500px) {
@@ -235,9 +236,9 @@
       <div class="instructions">
         <p>
           <img src="images/pierrot.png" alt="pierrot"> <img src="images/pierrot.png" alt="pierrot"> <img src="images/pierrot.png" alt="pierrot">
-          が揃うと男の子が、<br>
+          を揃えると弟が、<br>
           <img src="images/7.png" alt="7"> <img src="images/7.png" alt="7"> <img src="images/7.png" alt="7">
-          が揃うと女の子が生まれることを意味します。
+          を揃えると妹が生まれることを意味します。
         </p>
       </div>
     </div>
@@ -247,8 +248,8 @@
   <div class="modal" id="resultModal">
     <div class="modal-content">
       <button class="close-modal-btn" id="closeResultModal">&times;</button>
-      <h3>なんと！</h3>
-      <p>莉緒には<br>妹ができます！</p>
+      <h3>おめでとう！</h3>
+      <p>第二子の性別は<br>女の子です！</p>
     </div>
   </div>
 
@@ -264,8 +265,6 @@
       let finalResults = ['bell.png', 'bar.png', 'animal.png'];
       // GOGO状態（初期は未表示）
       let isGogoActive = false;
-      // アニメーション処理中（pierrotイベント時にレバー操作を無効にするため）
-      let isAnimating = false;
 
       const spinCountText = document.getElementById('spinCountText');
       const jackpotCountText = document.getElementById('jackpotCountText');
@@ -450,7 +449,7 @@
               reelPos[idx] = bestIndex * imageHeight - imageHeight;
               container.style.transform = `translateY(-${reelPos[idx]}px)`;
             }
-            // 全てのタイマーがnullなら
+            // 全てのタイマーがnullになったらコールバック
             if (reverseTimers.every(timer => timer === null)) {
               if (callback) callback();
             }
@@ -458,15 +457,8 @@
         }
       }
 
-      // アニメーション処理中はレバー操作を無効にするためのフラグ
-      let isAnimating = false;
-
       // レバー押下処理
       function handleLeverPress() {
-        if (isAnimating) {
-          console.log('Animation in progress; lever input ignored.');
-          return;
-        }
         leverBall.classList.add('pressed');
         console.log('Lever pressed - .pressed class added');
         startSlotIfNotSpinning();
@@ -490,7 +482,7 @@
             finalResults = ['0.png', '3.png', '6.png'];
             console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
             showGogo();
-            // この場合はGOGO表示のみ（結果ポップアップは出さない）
+            // この場合はGOGO表示のみ（おめでとうポップは出さない）
           } else {
             // 負け組：安全な組み合わせに固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
@@ -501,8 +493,6 @@
           if (rand < 0.4) {
             finalResults = ['pierrot.png', 'pierrot.png', 'pierrot.png'];
             console.log('Draw result: Pierrot event triggered');
-            // アニメーション中はレバー操作を無効にする
-            isAnimating = true;
           } else {
             // それ以外は負け組に固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
@@ -584,7 +574,7 @@
         const [r1, r2, r3] = finalResults;
         console.log('Checking result:', finalResults);
         if (!isGogoActive) {
-          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみ（結果ポップアップは出さない）
+          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみ（ポップアップは出さない）
           if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
             displayMessage.textContent = "当たり";
           } else {
@@ -599,8 +589,6 @@
             autoReverseSpin(function(){
               displayMessage.textContent = "";
               showResultModal();
-              // 逆回転処理完了後、アニメーション終了とする
-              isAnimating = false;
             });
           });
           return;

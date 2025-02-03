@@ -22,7 +22,7 @@
       min-height: 100vh;
     }
 
-    /* 通知エリア */
+    /* 通知エリア（今回は使用しません） */
     #notification {
       position: fixed;
       top: -60px;
@@ -159,7 +159,7 @@
       align-items: center;
       position: relative;
     }
-    /* リール枠：横60px、縦は1:1画像3枚分の180pxに変更 */
+    /* リール枠：横60px、縦は1:1画像3枚分の180px */
     .reel {
       width: 60px;
       height: 180px;
@@ -178,7 +178,7 @@
       width: 100%;
       background: #fff;
     }
-    /* 各画像のコンテナ：高さ・line-height を60pxに */
+    /* 各画像コンテナ：高さ・line-heightを60px */
     .numbers div {
       height: 60px;
       line-height: 60px;
@@ -213,7 +213,7 @@
     .boldNumber {
       font-weight: bold;
     }
-    /* silhouette.png と GOGO.png */
+    /* silhouette.png と GOGO.png のスタイル */
     .silhouette-image, .gogo-image {
       position: absolute;
       top: 100px;
@@ -304,6 +304,10 @@
     .modal-content .close-modal-btn:hover {
       color: #555;
     }
+    /* 結果ポップアップ（「第二子の性別は…」）のモーダル */
+    #resultModal .modal-content {
+      text-align: center;
+    }
     /* レスポンシブ */
     @media (max-width: 500px) {
       .slot-machine {
@@ -319,7 +323,7 @@
 </head>
 <body>
 
-  <!-- 通知エリア -->
+  <!-- 通知エリア（今回は使用しません） -->
   <div id="notification">
     <button class="close-btn" id="closeNotification">&times;</button>
     <span id="notificationMessage"></span>
@@ -391,9 +395,18 @@
       <button class="close-modal-btn" id="closeHelpModal">&times;</button>
       <h3>あそび方</h3>
       <p>黒いレバーをタップすると<br>
-      スロットが回転します！<br>
-      赤いストップボタンを押すと<br>
-      回転が停止します！</p>
+         スロットが回転します！<br>
+         赤いストップボタンを押すと<br>
+         回転が停止します！</p>
+    </div>
+  </div>
+
+  <!-- 結果ポップアップモーダル（「第二子の性別は…」） -->
+  <div class="modal" id="resultModal">
+    <div class="modal-content">
+      <button class="close-modal-btn" id="closeResultModal">&times;</button>
+      <h3>おめでとう！</h3>
+      <p>第二子の性別は<br>女の子です！</p>
     </div>
   </div>
 
@@ -403,8 +416,8 @@
       let spinCount = 0;
       let jackpotCount = 0;
       let finalResults = ['bell.png', 'bell.png', 'bell.png'];
+      // GOGO状態（初期は未表示）
       let isGogoActive = false;
-      let forceNextSeven = false;
 
       const spinCountText = document.getElementById('spinCountText');
       const jackpotCountText = document.getElementById('jackpotCountText');
@@ -429,6 +442,9 @@
       const helpModal = document.getElementById('helpModal');
       const closeHelpModalBtn = document.getElementById('closeHelpModal');
 
+      const resultModal = document.getElementById('resultModal');
+      const closeResultModalBtn = document.getElementById('closeResultModal');
+
       // 各リールに表示する画像リスト
       const reelImages = {
         reel1: ['bell.png', '7.png', 'pierrot.png', '0.png', 'cherry.png', 'bar.png', 'animal.png'],
@@ -439,7 +455,7 @@
       let isSpinningFlag = [false, false, false];
       let reelPos = [0, 0, 0];
       let reelTimer = [null, null, null];
-      // 画像高さを60pxとして計算：7枚×4繰り返し = 1680px
+      // 画像サイズ（正方形）を60pxとして計算
       const imageHeight = 60;
       const reelHeight = imageHeight * 7 * 4;  
       const scrollSpeed = 60;
@@ -450,7 +466,6 @@
         const hours = now.getHours();
         return hours >= 8 && hours < 24;
       }
-
       function getCurrentDateString() {
         const today = new Date();
         const year = today.getFullYear();
@@ -458,11 +473,9 @@
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
       }
-
       function initializeCounts() {
         const todayStr = getCurrentDateString();
         const lastDate = localStorage.getItem('slotLastDate');
-
         if (lastDate !== todayStr) {
           spinCount = 0;
           jackpotCount = 0;
@@ -477,12 +490,10 @@
         }
         updateSpinCountDisplay();
       }
-
       function updateSpinCountDisplay() {
         spinCountText.textContent = `回転数：${spinCount}`;
         jackpotCountText.textContent = `当選回数：${jackpotCount}`;
       }
-
       function fillReelImages(container, images) {
         const repeatTimes = 4;
         const items = [];
@@ -503,33 +514,13 @@
         });
         console.log(`Filled ${container.id} with images:`, images);
       }
-
       function fillAllReels() {
         fillReelImages(numbers1, reelImages.reel1);
         fillReelImages(numbers2, reelImages.reel2);
         fillReelImages(numbers3, reelImages.reel3);
       }
 
-      function showNotification(message, isCritical = false, redirectURL = null) {
-        notificationMessage.innerHTML = message.replace(/\n/g, '<br>');
-        if (isCritical && redirectURL) {
-          notificationLink.href = redirectURL;
-          notificationLink.textContent = 'LINEで報告!!';
-          notificationLink.style.display = 'inline';
-        } else {
-          notificationLink.style.display = 'none';
-        }
-        notification.classList.add('show');
-        notification.style.display = 'block';
-        console.log('Notification shown:', message);
-      }
-
-      function hideNotification() {
-        notification.classList.remove('show');
-        notification.style.display = 'none';
-        console.log('Notification hidden');
-      }
-
+      // ヘルプ／結果モーダル関連
       function showHelpModal() {
         helpModal.style.display = 'flex';
         console.log('Help modal displayed');
@@ -537,6 +528,14 @@
       function hideHelpModal() {
         helpModal.style.display = 'none';
         console.log('Help modal hidden');
+      }
+      function showResultModal() {
+        resultModal.style.display = 'flex';
+        console.log('Result modal displayed');
+      }
+      function hideResultModal() {
+        resultModal.style.display = 'none';
+        console.log('Result modal hidden');
       }
 
       // silhouette と GOGO の切替え
@@ -553,12 +552,14 @@
         console.log('GOGO.png is now hidden (silhouette restored)');
       }
 
+      // レバー押下処理
       function handleLeverPress() {
         leverBall.classList.add('pressed');
         console.log('Lever pressed - .pressed class added');
         startSlotIfNotSpinning();
       }
 
+      // スロット開始時の抽選処理
       function startSlotIfNotSpinning() {
         if (isSpinningFlag.some(sp => sp)) {
           console.log('Slot is already spinning');
@@ -569,26 +570,34 @@
         updateSpinCountDisplay();
         displayMessage.textContent = "";
 
-        // forceNextSeven が立っている場合は、今回 [7,7,7] で固定
-        if (forceNextSeven) {
-          finalResults = ['7.png', '7.png', '7.png'];
-          forceNextSeven = false;
-          console.log('Forced jackpot: [7.png, 7.png, 7.png] for this turn');
-        } else {
-          let rand = Math.random();
-          console.log('Random number for draw:', rand);
-          if (rand < 0.0611) {  // 6.11% の確率
+        let rand = Math.random();
+        console.log('Random number for draw:', rand);
+        if (!isGogoActive) {
+          // 通常状態：6.11%の確率で [0,3,6] を揃える
+          if (rand < 0.0611) {
             finalResults = ['0.png', '3.png', '6.png'];
             console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
             showGogo();
-            forceNextSeven = true;
           } else {
             finalResults = [
               getRandomImage('reel1'),
               getRandomImage('reel2'),
-              getRandomImage('reel3'),
+              getRandomImage('reel3')
             ];
             console.log('Draw result: Random images:', finalResults);
+          }
+        } else {
+          // GOGO表示中：61.1%の確率で [7,7,7] を揃える
+          if (rand < 0.611) {
+            finalResults = ['7.png', '7.png', '7.png'];
+            console.log('Draw result: Forced [7.png, 7.png, 7.png] under GOGO mode');
+          } else {
+            finalResults = [
+              getRandomImage('reel1'),
+              getRandomImage('reel2'),
+              getRandomImage('reel3')
+            ];
+            console.log('Draw result: Random images (GOGO active):', finalResults);
           }
         }
 
@@ -600,14 +609,12 @@
         stopBtn3.disabled = false;
         console.log('STOP buttons enabled');
       }
-
       function getRandomImage(reel) {
         const images = reelImages[reel];
         const randomImage = images[Math.floor(Math.random() * images.length)];
         console.log(`Random image selected for ${reel}: ${randomImage}`);
         return randomImage;
       }
-
       function startReel(idx) {
         isSpinningFlag[idx] = true;
         reelPos[idx] = 0;
@@ -622,11 +629,9 @@
         }, 20);
         console.log(`Reel ${idx+1} started spinning`);
       }
-
       stopBtn1.addEventListener('click', () => stopReel(0, stopBtn1));
       stopBtn2.addEventListener('click', () => stopReel(1, stopBtn2));
       stopBtn3.addEventListener('click', () => stopReel(2, stopBtn3));
-
       function stopReel(idx, btn) {
         if (!isSpinningFlag[idx]) {
           console.log(`Reel ${idx+1} is not spinning`);
@@ -649,7 +654,6 @@
           if (!img) continue;
           const src = img.getAttribute('src').split('/').pop();
           if (src === finalVal) {
-            // 各項目の高さが imageHeight（60px）のため、調整は i * 60 - 60
             const desiredOffset = i * imageHeight - imageHeight;
             const distance = Math.abs(desiredOffset - reelPos[idx]);
             if (distance < minDistance) {
@@ -668,28 +672,41 @@
           checkResult();
         }
       }
-
       function checkResult() {
         const [r1, r2, r3] = finalResults;
         console.log('Checking result:', finalResults);
+        // [0,3,6] の場合（ジャックポット） → GOGO表示中に切替済み
         if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
           displayMessage.textContent = "当たり";
           jackpotCount++;
           localStorage.setItem('slotJackpotCount', jackpotCount);
           updateSpinCountDisplay();
           console.log('Jackpot [0.png, 3.png, 6.png] achieved');
-          showNotification("第二子の性別は\n女の子です！", true, "");
-        } else {
+          // ※GOGO表示はそのまま
+        }
+        // GOGO状態中で [7,7,7] が揃った場合 → 結果ポップアップ表示
+        else if (r1 === '7.png' && r2 === '7.png' && r3 === '7.png' && isGogoActive) {
+          displayMessage.textContent = "当たり";
+          jackpotCount++;
+          localStorage.setItem('slotJackpotCount', jackpotCount);
+          updateSpinCountDisplay();
+          console.log('Jackpot [7.png, 7.png, 7.png] achieved under GOGO mode');
+          showResultModal();
+          // 結果表示後、GOGO状態は解除
+          hideGogo();
+        }
+        else {
           displayMessage.textContent = "36分の１の確率で何かが起こる!!";
           console.log('No jackpot. Display message updated');
-          hideGogo();
+          // ジャックポットでなければGOGO状態はそのまま、もしくは解除してもよい
         }
       }
 
       // --- イベントリスナー ---
-      closeNotificationBtn.addEventListener('click', hideNotification);
+      closeNotificationBtn.addEventListener('click', () => { notification.style.display = 'none'; });
       closeHelpModalBtn.addEventListener('click', hideHelpModal);
       backButton.addEventListener('click', showHelpModal);
+      closeResultModalBtn.addEventListener('click', hideResultModal);
 
       leverBall.addEventListener('mousedown', e => {
         e.preventDefault();

@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -22,38 +22,34 @@
       min-height: 100vh;
     }
 
-  /* 通知エリア */
-#notification {
-  position: fixed; /* 画面上部に固定 */
-  top: -60px; /* 初期位置を調整（表示時にスライドインするため） */
-  left: 0;
-  right: 0;
-  background-color: rgba(255, 255, 255, 0.95);
-  color: #000;
-  padding: 15px 25px;
-  border-radius: 0; /* 必要に応じて調整（上下のみ丸める場合例を後述） */
-  display: none; /* 初期状態は非表示 */
-  z-index: 100; /* 他の要素より前面に表示 */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  font-size: 1em;
-  width: 100%; /* 幅を画面全体に設定 */
-  text-align: center;
-  transition: top 0.5s ease; /* スライドイン・アウトのアニメーション */
-}
-
-/* 通知が表示されるときの位置 */
-#notification.show {
-  top: 20px;
-}
-
-/* 角を上下のみ丸める場合の例 */
-#notification {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
+    /* 通知エリア */
+    #notification {
+      position: fixed; /* 画面上部に固定 */
+      top: -60px; /* 初期位置を調整（表示時にスライドインするため） */
+      left: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #000;
+      padding: 15px 25px;
+      border-radius: 0;
+      display: none; /* 初期状態は非表示 */
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-size: 1em;
+      width: 100%;
+      text-align: center;
+      transition: top 0.5s ease;
+    }
+    #notification.show {
+      top: 20px;
+    }
+    /* 角を上下のみ丸める */
+    #notification {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
     /* 閉じるボタン */
     #notification .close-btn {
       position: absolute;
@@ -78,14 +74,13 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.8);
       position: relative;
       overflow: hidden;
-      padding-bottom: 20px; /* 下部に少し余裕 */
+      padding-bottom: 20px;
     }
-
     /* --- 上部ディスプレイ部 --- */
     .slot-display {
       background: #e9212d;
       padding: 10px;
-      height: 120px; /* 高さを調整して通知エリアを追加 */
+      height: 120px;
       border-bottom: 3px solid #000;
       text-align: center;
       position: relative;
@@ -112,8 +107,7 @@
       font-size: 1em;
       margin-top: 5px;
     }
-
-    /* --- 本体下部：レバー＆リール+ボタンたちを横一列に --- */
+    /* --- 本体下部：レバー＆リール+ボタンたち --- */
     .machine-body {
       display: flex;
       align-items: flex-start;
@@ -121,15 +115,13 @@
       padding: 10px;
       position: relative;
     }
-
-    /* レバーコンテナを左端に */
+    /* レバーコンテナ */
     .lever-container {
       width: 60px;
       height: 100px;
       position: relative;
       margin-right: 10px;
     }
-    /* シルバー棒 */
     .lever-shaft {
       position: absolute;
       left: 28px;
@@ -139,7 +131,6 @@
       background: linear-gradient(#bbb, #777);
       border-radius: 2px;
     }
-    /* 黒い球 */
     .lever-ball {
       position: absolute;
       left: 10px;
@@ -150,38 +141,30 @@
       border-radius: 50%;
       box-shadow: 0 0 8px rgba(0,0,0,0.6) inset, 0 4px 6px rgba(0,0,0,0.8);
       user-select: none;
-
-      /* スマホでのハイライト等を防ぐ(押し込み演出が見やすくなる) */
       -webkit-user-select: none;
       -webkit-touch-callout: none;
       -webkit-tap-highlight-color: transparent;
       touch-action: none; 
-      
-      /* アニメーションを滑らかに */
       transition: transform 0.2s ease;
       cursor: pointer;
     }
-    /* 押し込む間だけ下がるアニメを .pressed クラスで表現 */
     .lever-ball.pressed {
       transform: translateY(40px);
     }
-
-    /* --- リールとストップボタンを横並びで1列×3セット --- */
+    /* --- リールとストップボタン --- */
     .reels-stop-area {
       display: flex;
       gap: 10px;
     }
     .reel-stop {
       display: flex;
-      flex-direction: column; /* 縦にリール + ボタン */
+      flex-direction: column;
       align-items: center;
-      position: relative; /* 画像の重ね合わせに必要 */
+      position: relative;
     }
-
-    /* リール枠 */
     .reel {
       width: 60px;
-      height: 120px; /* 画像高さ40px × 3枚 = 120px */
+      height: 120px;
       overflow: hidden;
       border-radius: 8px;
       background: #000;
@@ -189,26 +172,23 @@
       margin-bottom: 6px;
       position: relative;
     }
-    /* リール内 */
     .numbers {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      background: #fff; /* 全体を白背景に */
-      /* transition: transform 0.5s ease; */ /* トランジションを削除 */
+      background: #fff;
     }
     .numbers div {
-      height: 40px; /* 画像高さを40pxに変更 */
-      line-height: 40px; /* 画像高さに合わせて変更 */
+      height: 40px;
+      line-height: 40px;
       text-align: center;
-      background: transparent; /* 個々は透明(上で白背景にしている) */
+      background: transparent;
       color: #000;
       border-bottom: 1px solid #ccc;
-      font-size: 1em; /* フォントサイズを調整 */
+      font-size: 1em;
     }
-
-    /* ストップボタン(赤) */
+    /* ストップボタン */
     .stop-btn {
       width: 60px;
       height: 60px;
@@ -229,29 +209,26 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
-
-    /* ストップ後、その行を太字にするクラス */
+    /* 停止時に太字にする */
     .boldNumber {
       font-weight: bold;
     }
-
-    /* silhouette.pngとGOGO.pngのスタイル */
+    /* silhouette.png と GOGO.png のスタイル */
     .silhouette-image, .gogo-image {
       position: absolute;
-      top: 100px; /* 少し下に調整 */
-      left: -255px; /* ストップボタンの右側に配置 */
+      top: 100px;
+      left: -255px;
       width: 120px;
       height: auto;
-      display: none; /* GOGO.pngは非表示。silhouette.pngは常時表示 */
+      display: none;
     }
     .silhouette-image {
-      display: block; /* 常時表示 */
+      display: block;
     }
     .gogo-image {
-      z-index: 5; /* silhouette.pngより前面に表示 */
+      z-index: 5;
     }
-
-    /* 営業時間外メッセージのスタイル */
+    /* 営業時間外メッセージ */
     #closed-message {
       background-color: rgba(255, 255, 255, 0.95);
       color: #000;
@@ -261,15 +238,13 @@
       font-size: 1.5em;
       text-align: center;
     }
-
-    /* リール内の画像に対するスタイル */
+    /* リール内画像のスタイル */
     .numbers img {
-      width: 100%; /* リール枠に合わせて画像の幅を調整 */
-      height: 40px; /* 画像高さを40pxに固定 */
-      object-fit: contain; /* 画像が枠に収まるように調整 */
+      width: 100%;
+      height: 40px;
+      object-fit: contain;
     }
-
-    /* --- バックボタンセクション --- */
+    /* バックボタンセクション */
     .back-button-container {
       width: 100%;
       padding: 10px;
@@ -283,25 +258,23 @@
     .back-button-container img {
       width: 100%;
       height: auto;
-      /* max-height: 50px; */ /* 見切れを防ぐため削除 */
-      object-fit: contain; /* 画像がコンテナに収まるように変更 */
+      object-fit: contain;
       border-radius: 6px;
     }
-
-    /* --- ヘルプモーダル --- */
+    /* ヘルプモーダル */
     .modal {
-      display: none; /* 初期は非表示 */
+      display: none;
       position: fixed;
-      z-index: 200; /* 通知エリアより前面 */
+      z-index: 200;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0,0,0,0.5); /* 背景の半透明 */
+      background-color: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
-      display: flex; /* フレックスボックスを使用 */
+      display: flex;
     }
     .modal-content {
       background-color: #fff;
@@ -331,8 +304,7 @@
     .modal-content .close-modal-btn:hover {
       color: #555;
     }
-
-    /* --- レスポンシブデザイン --- */
+    /* レスポンシブ */
     @media (max-width: 500px) {
       .slot-machine {
         width: 90%;
@@ -354,7 +326,7 @@
     <a href="#" id="notificationLink" target="_blank" style="margin-left: 10px; color: #007bff; text-decoration: underline;"></a>
   </div>
 
-  <!-- 営業時間外メッセージ（初期は非表示） -->
+  <!-- 営業時間外メッセージ -->
   <div id="closed-message" style="display: none;">
     営業時間外です。<br>
     AM8時からPM12時にお越しください。
@@ -371,37 +343,36 @@
       <div id="displayMessage">6.11％の確率で何かが起こる!!</div>
     </div>
 
-    <!-- 本体下部：レバー + (リール+ボタン)×3 -->
+    <!-- 本体下部：レバー + リール×3 -->
     <div class="machine-body">
       <!-- レバー -->
       <div class="lever-container">
         <div class="lever-shaft"></div>
         <div class="lever-ball" id="leverBall"></div>
       </div>
-
-      <!-- リール&STOPを3セット横並び -->
+      <!-- リールとSTOPボタン -->
       <div class="reels-stop-area">
-        <!-- 1番リール -->
+        <!-- リール1 -->
         <div class="reel-stop">
           <div class="reel" id="reel1">
             <div class="numbers" id="numbers1"></div>
           </div>
           <button class="stop-btn" id="stop1" disabled>STOP</button>
         </div>
-        <!-- 2番リール -->
+        <!-- リール2 -->
         <div class="reel-stop">
           <div class="reel" id="reel2">
             <div class="numbers" id="numbers2"></div>
           </div>
           <button class="stop-btn" id="stop2" disabled>STOP</button>
         </div>
-        <!-- 3番リール -->
+        <!-- リール3 -->
         <div class="reel-stop">
           <div class="reel" id="reel3">
             <div class="numbers" id="numbers3"></div>
           </div>
           <button class="stop-btn" id="stop3" disabled>STOP</button>
-          <!-- silhouette.png と GOGO.png をここに追加 -->
+          <!-- silhouette と GOGO -->
           <img src="silhouette.png" alt="Silhouette" class="silhouette-image" id="silhouetteImage">
           <img src="GOGO.png" alt="GOGO" class="gogo-image" id="gogoImage">
         </div>
@@ -427,25 +398,22 @@
   </div>
 
   <script>
-    /* -------------------------------------------
-        1)  指を置いた瞬間にレバーが下がり、同時にスロットを回す
-        2)  指を離す(またはマウスを離す)まで押し込み状態を維持
-        3)  STOP すると、リールの真ん中(約60px)に画像が止まり
-           該当画像をハイライトに
-        4)  当たり(0.png,3.png,6.png)なら通知エリアにメッセージとリンクを表示
-            当たり(7.png,7.png,7.png)なら通知エリアにメッセージとリンクを表示
-    ------------------------------------------- */
-
     window.addEventListener('DOMContentLoaded', () => {
-      // ----------------------------------------
-      //  変数の宣言と初期化
-      // ----------------------------------------
-
-      /* --- 回転数とジャックポット回数を localStorage で管理 --- */
+      // --- 変数宣言 ---
+      // 回転数・ジャックポット回数（localStorage管理）
       let spinCount = 0;
       let jackpotCount = 0;
 
-      /* --- DOM要素の参照 --- */
+      // 抽選結果初期値
+      let finalResults = ['bell.png', 'bell.png', 'bell.png'];
+
+      // GOGO状態管理
+      let isGogoActive = false;
+
+      // 次回スピンを強制的に7.pngで揃えるフラグ
+      let forceNextSeven = false;
+
+      // DOM要素の取得
       const spinCountText = document.getElementById('spinCountText');
       const jackpotCountText = document.getElementById('jackpotCountText');
       const displayMessage = document.getElementById('displayMessage');
@@ -465,7 +433,12 @@
       const numbers2 = document.getElementById('numbers2');
       const numbers3 = document.getElementById('numbers3');
 
-      /* --- 各リールに表示する画像のリスト --- */
+      // ヘルプモーダル関連
+      const backButton = document.getElementById('backButton');
+      const helpModal = document.getElementById('helpModal');
+      const closeHelpModalBtn = document.getElementById('closeHelpModal');
+
+      // 各リールに表示する画像リスト
       const reelImages = {
         reel1: ['bell.png', '7.png', 'pierrot.png', '0.png', 'cherry.png', 'bar.png', 'animal.png'],
         reel2: ['bell.png', '7.png', 'pierrot.png', 'cherry.png', 'bar.png', '3.png', 'animal.png'],
@@ -475,32 +448,17 @@
       let isSpinningFlag = [false, false, false];
       let reelPos = [0, 0, 0];
       let reelTimer = [null, null, null];
-      const reelHeight = 40 * 7 * 4;  // 7画像 * 4回繰り返し * 40px = 1120px
+      const reelHeight = 40 * 7 * 4;  // 7画像 x 4回 = 1120px
       const scrollSpeed = 60;         // px/interval
 
-      // 抽選結果
-      let finalResults = ['bell.png', 'bell.png', 'bell.png']; // 初期値
-
-      // GOGO状態
-      let isGogoActive = false;
-
-      /* --- ヘルプモーダルの要素 --- */
-      const backButton = document.getElementById('backButton');
-      const helpModal = document.getElementById('helpModal');
-      const closeHelpModalBtn = document.getElementById('closeHelpModal');
-
-      // ----------------------------------------
-      //  関数の定義
-      // ----------------------------------------
-
-      // 営業時間チェック関数
+      // --- 営業時間チェック ---
       function isWithinBusinessHours() {
         const now = new Date();
         const hours = now.getHours();
-        return hours >= 8 && hours < 24; // 午前8時から24時
+        return hours >= 8 && hours < 24; // 8:00～23:59
       }
 
-      // 日付フォーマット関数（YYYY-MM-DD）
+      // 日付フォーマット（YYYY-MM-DD）
       function getCurrentDateString() {
         const today = new Date();
         const year = today.getFullYear();
@@ -509,13 +467,12 @@
         return `${year}-${month}-${day}`;
       }
 
-      // 日付のチェックとカウントのリセット
+      // カウント初期化（新しい日ならリセット）
       function initializeCounts() {
         const todayStr = getCurrentDateString();
         const lastDate = localStorage.getItem('slotLastDate');
 
         if (lastDate !== todayStr) {
-          // 新しい日なのでカウントをリセット
           spinCount = 0;
           jackpotCount = 0;
           localStorage.setItem('slotSpinCount', spinCount);
@@ -523,7 +480,6 @@
           localStorage.setItem('slotLastDate', todayStr);
           console.log('Counts reset for a new day');
         } else {
-          // 同じ日なのでカウントを取得
           spinCount = parseInt(localStorage.getItem('slotSpinCount') || '0', 10);
           jackpotCount = parseInt(localStorage.getItem('slotJackpotCount') || '0', 10);
           console.log('Counts loaded from localStorage');
@@ -531,7 +487,6 @@
         updateSpinCountDisplay();
       }
 
-      // 回転数とジャックポット回数の表示を更新
       function updateSpinCountDisplay() {
         spinCountText.textContent = `回転数：${spinCount}`;
         jackpotCountText.textContent = `当選回数：${jackpotCount}`;
@@ -539,20 +494,20 @@
 
       // 各リールに画像を埋め込む
       function fillReelImages(container, images) {
-        const repeatTimes = 4; // 画像リストを4回繰り返す
+        const repeatTimes = 4;
         const items = [];
-        for(let r=0; r<repeatTimes; r++){
+        for (let r = 0; r < repeatTimes; r++){
           images.forEach(img => items.push(img));
         }
         container.innerHTML = '';
         items.forEach(imgSrc => {
           const div = document.createElement('div');
           const img = document.createElement('img');
-          img.src = `images/${imgSrc}`; // 画像のパスを指定
+          img.src = `images/${imgSrc}`;
           img.alt = imgSrc.replace('.png', '');
-          img.style.width = '100%'; // リール枠に合わせて画像の幅を調整
-          img.style.height = '40px'; // 画像の高さを40pxに固定
-          img.style.objectFit = 'contain'; // 画像が枠に収まるように調整
+          img.style.width = '100%';
+          img.style.height = '40px';
+          img.style.objectFit = 'contain';
           div.appendChild(img);
           container.appendChild(div);
         });
@@ -566,96 +521,85 @@
         fillReelImages(numbers3, reelImages.reel3);
       }
 
-      // 通知を表示する関数
-      function showNotification(message, isCritical=false, redirectURL=null) {
-        notificationMessage.innerHTML = message.replace(/\n/g, '<br>'); // 改行を反映
-
-        if(isCritical && redirectURL){
-          // リンクを設定
+      // 通知表示
+      function showNotification(message, isCritical = false, redirectURL = null) {
+        notificationMessage.innerHTML = message.replace(/\n/g, '<br>');
+        if (isCritical && redirectURL) {
           notificationLink.href = redirectURL;
           notificationLink.textContent = 'LINEで報告!!';
           notificationLink.style.display = 'inline';
         } else {
           notificationLink.style.display = 'none';
         }
-
         notification.classList.add('show');
         notification.style.display = 'block';
         console.log('Notification shown:', message);
       }
 
-      // 通知を非表示にする関数
       function hideNotification() {
         notification.classList.remove('show');
         notification.style.display = 'none';
         console.log('Notification hidden');
       }
 
-      // ヘルプモーダルを表示する関数
+      // ヘルプモーダル表示／非表示
       function showHelpModal() {
         helpModal.style.display = 'flex';
         console.log('Help modal displayed');
       }
-
-      // ヘルプモーダルを非表示にする関数
       function hideHelpModal() {
         helpModal.style.display = 'none';
         console.log('Help modal hidden');
       }
 
-      // レバー押し込み時の処理をまとめた関数
+      // シルエットとGOGOの切り替え
+      function showGogo() {
+        isGogoActive = true;
+        // シルエット非表示、GOGO表示
+        silhouetteImage.style.display = 'none';
+        gogoImage.style.display = 'block';
+        console.log('GOGO.png is now displayed (silhouette replaced)');
+      }
+      function hideGogo() {
+        isGogoActive = false;
+        // GOGO非表示、シルエット表示
+        gogoImage.style.display = 'none';
+        silhouetteImage.style.display = 'block';
+        console.log('GOGO.png is now hidden (silhouette restored)');
+      }
+
+      // レバー押下処理
       function handleLeverPress() {
-        // レバーを下げる演出
         leverBall.classList.add('pressed');
         console.log('Lever pressed - .pressed class added');
-
-        // スロットを回し始める
         startSlotIfNotSpinning();
       }
 
-      // レバーを押した瞬間に呼ばれる(もし未回転ならスタート)
+      // スロット開始処理（重複回避）
       function startSlotIfNotSpinning() {
-        // まだ回転中なら何もしない
-        if(isSpinningFlag.some(sp => sp)) {
+        if (isSpinningFlag.some(sp => sp)) {
           console.log('Slot is already spinning');
           return;
         }
-
-        // 回転数アップ
         spinCount++;
         localStorage.setItem('slotSpinCount', spinCount);
         updateSpinCountDisplay();
-        console.log(`Spin count incremented: ${spinCount}`);
-
-        // メッセージ等リセット
         displayMessage.textContent = "";
 
-        // 抽選
-        // [0.png,3.png,6.png]が36%、
-        // [7.png,7.png,7.png]が1%、
-        // その他が63%
-        let rand = Math.random();
-        console.log('Random number for draw:', rand);
-        if(isGogoActive){
-          if(rand < 0.36){
-            finalResults = ['0.png', '3.png', '6.png'];
-            console.log('Draw result: [0.png, 3.png, 6.png]');
-          } else if(rand < 0.37){
-            finalResults = ['7.png', '7.png', '7.png'];
-            console.log('Draw result: [7.png, 7.png, 7.png]');
-          } else {
-            finalResults = [
-              getRandomImage('reel1'),
-              getRandomImage('reel2'),
-              getRandomImage('reel3'),
-            ];
-            console.log('Draw result: Random images:', finalResults);
-          }
+        // 次回強制7表示フラグが立っている場合、今回は [7,7,7] で固定
+        if (forceNextSeven) {
+          finalResults = ['7.png', '7.png', '7.png'];
+          forceNextSeven = false;
+          console.log('Forced jackpot: [7.png, 7.png, 7.png] for this turn');
         } else {
-          // 通常状態では036を排除
-          if(rand < 0.00100036){
-            finalResults = ['7.png', '7.png', '7.png'];
-            console.log('Draw result: [7.png, 7.png, 7.png]');
+          let rand = Math.random();
+          console.log('Random number for draw:', rand);
+          if (rand < 0.0611) {  // 6.11% の確率
+            finalResults = ['0.png', '3.png', '6.png'];
+            console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
+            // ジャックポット発生時、シルエットをGOGOに切替え、次回は強制7表示
+            showGogo();
+            forceNextSeven = true;
           } else {
             finalResults = [
               getRandomImage('reel1'),
@@ -666,19 +610,17 @@
           }
         }
 
-        // 3本のリールを回転開始
-        for(let i=0; i<3; i++){
+        // 各リールの回転開始
+        for (let i = 0; i < 3; i++){
           startReel(i);
         }
-
-        // STOPボタン有効
         stopBtn1.disabled = false;
         stopBtn2.disabled = false;
         stopBtn3.disabled = false;
         console.log('STOP buttons enabled');
       }
 
-      // ランダムにリールから画像を選択
+      // ランダム画像選択
       function getRandomImage(reel) {
         const images = reelImages[reel];
         const randomImage = images[Math.floor(Math.random() * images.length)];
@@ -686,18 +628,15 @@
         return randomImage;
       }
 
-      // リール回転
+      // リール回転開始
       function startReel(idx) {
         isSpinningFlag[idx] = true;
         reelPos[idx] = 0;
         const container = [numbers1, numbers2, numbers3][idx];
-        // 既存のsetIntervalがあればクリア
-        if(reelTimer[idx]) clearInterval(reelTimer[idx]);
-
+        if (reelTimer[idx]) clearInterval(reelTimer[idx]);
         reelTimer[idx] = setInterval(() => {
           reelPos[idx] += scrollSpeed;
-          // モジュロでループ
-          if(reelPos[idx] > reelHeight){
+          if (reelPos[idx] > reelHeight) {
             reelPos[idx] %= reelHeight;
           }
           container.style.transform = `translateY(-${reelPos[idx]}px)`;
@@ -705,13 +644,13 @@
         console.log(`Reel ${idx+1} started spinning`);
       }
 
-      // STOPボタン
+      // STOPボタン処理
       stopBtn1.addEventListener('click', () => stopReel(0, stopBtn1));
       stopBtn2.addEventListener('click', () => stopReel(1, stopBtn2));
       stopBtn3.addEventListener('click', () => stopReel(2, stopBtn3));
 
-      function stopReel(idx, btn){
-        if(!isSpinningFlag[idx]) {
+      function stopReel(idx, btn) {
+        if (!isSpinningFlag[idx]) {
           console.log(`Reel ${idx+1} is not spinning`);
           return;
         }
@@ -720,128 +659,72 @@
         btn.disabled = true;
         console.log(`Reel ${idx+1} stopped`);
 
-        // 最終結果をリール中央に合わせる
+        // リール中央に最終結果を合わせる処理
         const finalVal = finalResults[idx];
         const container = [numbers1, numbers2, numbers3][idx];
         const allDivs = container.querySelectorAll('div');
         allDivs.forEach(div => div.classList.remove('boldNumber'));
 
         let bestIndex = 0;
-
-        // 最も近い位置の画像を選択
         let minDistance = Infinity;
-        for(let i=0; i<allDivs.length; i++){
+        for (let i = 0; i < allDivs.length; i++){
           const img = allDivs[i].querySelector('img');
-          if (!img) continue; // imgが存在しない場合を防ぐ
-          const src = img.getAttribute('src').split('/').pop(); // 'images/bell.png' -> 'bell.png'
-          if(src === finalVal){
-            const desiredOffset = i * 40 - 40; // 画像高さ40pxに合わせて調整
+          if (!img) continue;
+          const src = img.getAttribute('src').split('/').pop();
+          if (src === finalVal) {
+            const desiredOffset = i * 40 - 40;
             const distance = Math.abs(desiredOffset - reelPos[idx]);
-            if(distance < minDistance){
+            if (distance < minDistance) {
               minDistance = distance;
               bestIndex = i;
             }
           }
         }
-
-        // リール位置を設定
-        const finalOffset = bestIndex * 40 - 40; // 画像高さ40pxに合わせて調整
+        const finalOffset = bestIndex * 40 - 40;
         reelPos[idx] = finalOffset;
         container.style.transform = `translateY(-${reelPos[idx]}px)`;
-
         allDivs[bestIndex].classList.add('boldNumber');
         console.log(`Reel ${idx+1} positioned at image: ${finalVal}`);
 
-        // 全停止したら結果判定とGOGO.pngの表示抽選
-        if(!isSpinningFlag[0] && !isSpinningFlag[1] && !isSpinningFlag[2]){
+        // 全リール停止時、結果判定
+        if (!isSpinningFlag[0] && !isSpinningFlag[1] && !isSpinningFlag[2]) {
           checkResult();
-
-          // 1回転終了後にGOGO.pngの表示を抽選
-          performGogoDraw();
         }
       }
 
-      function checkResult(){
+      function checkResult() {
         const [r1, r2, r3] = finalResults;
         console.log('Checking result:', finalResults);
-        if(r1 === '0.png' && r2 === '3.png' && r3 === '6.png'){
-          // [0.png,3.png,6.png]ジャックポット
+        // ジャックポット [0,3,6]
+        if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
           displayMessage.textContent = "当たり";
-          // ジャックポット回数アップ
           jackpotCount++;
           localStorage.setItem('slotJackpotCount', jackpotCount);
           updateSpinCountDisplay();
           console.log('Jackpot [0.png, 3.png, 6.png] achieved');
-
-          // GOGO.pngが表示されている場合は非表示にする
-          if(isGogoActive){
-            hideGogo();
-          }
-
-          // 通知エリアにメッセージとリンクを表示
+          // 既にshowGogo()で切替済み
           showNotification("第二子の性別は\n女の子です！", true, "");
-        } else if(r1 === '7.png' && r2 === '7.png' && r3 === '7.png'){
-          // [7.png,7.png,7.png]ジャックポット
-          displayMessage.textContent = "当たり";
-         
-          console.log('Jackpot [7.png, 7.png, 7.png] achieved');
-
-          // 通知エリアにメッセージとリンクを表示
-          showNotification("777が出ました！\nおめでとうございます！", true, "");
-        } else {
+        }
+        // それ以外は通常メッセージ
+        else {
           displayMessage.textContent = "36分の１の確率で何かが起こる!!";
           console.log('No jackpot. Display message updated');
+          // ジャックポットでなければ、シルエット状態に戻す
+          hideGogo();
         }
       }
 
-      // GOGO.pngの表示抽選
-      function performGogoDraw(){
-        const rand = Math.random();
-        console.log('Random number for GOGO draw:', rand);
-        if(rand < 0.027){ // 2.7%の確率
-          showGogo();
-        }
-        // 2.7%の確率でGOGO.pngが表示されるので、97.3％は何もしない
-      }
+      // --- イベントリスナー ---
+      closeNotificationBtn.addEventListener('click', hideNotification);
+      closeHelpModalBtn.addEventListener('click', hideHelpModal);
+      backButton.addEventListener('click', showHelpModal);
 
-      function showGogo(){
-        isGogoActive = true;
-        gogoImage.style.display = 'block';
-        console.log('GOGO.png is now displayed');
-      }
-
-      function hideGogo(){
-        isGogoActive = false;
-        gogoImage.style.display = 'none';
-        console.log('GOGO.png is now hidden');
-      }
-
-      // ----------------------------------------
-      //  イベントリスナーの設定
-      // ----------------------------------------
-
-      // 閉じるボタンのイベントリスナー
-      closeNotificationBtn.addEventListener('click', () => {
-        hideNotification();
-      });
-
-      // ヘルプモーダルの閉じるボタン
-      closeHelpModalBtn.addEventListener('click', () => {
-        hideHelpModal();
-      });
-
-      // バックボタンのクリックイベントリスナー
-      backButton.addEventListener('click', () => {
-        showHelpModal();
-      });
-
-      // PCマウス用: mousedown で回転開始
+      // PC用
       leverBall.addEventListener('mousedown', e => {
         e.preventDefault();
         handleLeverPress();
         console.log('Lever pressed via mousedown');
       });
-      // 指を離したら押し込み解除
       leverBall.addEventListener('mouseup', e => {
         leverBall.classList.remove('pressed');
         console.log('Lever released via mouseup');
@@ -850,14 +733,12 @@
         leverBall.classList.remove('pressed');
         console.log('Lever released via mouseleave');
       });
-
-      // スマホタッチ用: touchstart で回転開始
+      // スマホ用
       leverBall.addEventListener('touchstart', e => {
         e.preventDefault();
         handleLeverPress();
         console.log('Lever pressed via touchstart');
-      }, {passive:false});
-      // 離したら押し込み解除
+      }, {passive: false});
       leverBall.addEventListener('touchend', () => {
         leverBall.classList.remove('pressed');
         console.log('Lever released via touchend');
@@ -867,20 +748,12 @@
         console.log('Lever released via touchcancel');
       });
 
-      // STOPボタン
-      stopBtn1.addEventListener('click', () => stopReel(0, stopBtn1));
-      stopBtn2.addEventListener('click', () => stopReel(1, stopBtn2));
-      stopBtn3.addEventListener('click', () => stopReel(2, stopBtn3));
-
-      // ----------------------------------------
-      //  ページ読み込み時の初期化
-      // ----------------------------------------
+      // --- 初期処理 ---
       if (!isWithinBusinessHours()) {
         slotMachine.style.display = 'none';
         closedMessage.style.display = 'block';
         console.log('Outside business hours. Slot machine hidden.');
       } else {
-        // 営業時間内の処理を続行
         initializeCounts();
         fillAllReels();
         console.log('Page initialized and reels filled');

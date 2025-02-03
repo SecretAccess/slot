@@ -15,7 +15,7 @@
       align-items: center; justify-content: center;
       min-height: 100vh;
     }
-    /* 通知エリア（今回は使用しません） */
+    /* （今回、通知エリアは使用しません） */
     #notification { display: none; }
     
     /* スロット台 */
@@ -40,7 +40,7 @@
       justify-content: center; align-items: center;
     }
     .slot-display h2 { font-size: 1.5em; margin-bottom: 8px; }
-    /* 回転数のみ表示（当選数非表示）。中央寄せ */
+    /* 回転数のみ表示（当選数非表示）、中央寄せ */
     #spinCountContainer { display: flex; justify-content: center; }
     #spinCountText { font-size: 1.2em; }
     /* 結果メッセージは下部に表示 */
@@ -86,7 +86,7 @@
       background: transparent; color: #000; border-bottom: 1px solid #ccc;
       font-size: 1em;
     }
-    /* ストップボタン（操作用） */
+    /* ストップボタン（ユーザ操作可能） */
     .stop-btn {
       width: 60px; height: 60px; border-radius: 10px;
       border: 2px solid #aa0000;
@@ -96,6 +96,7 @@
       cursor: pointer;
     }
     .stop-btn:active { transform: translateY(2px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+    /* 初期状態ではストップボタンは無効（スピン開始時に有効化） */
     .stop-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     /* 停止時に太字 */
     .boldNumber { font-weight: bold; }
@@ -108,10 +109,10 @@
     .silhouette-image { display: block; }
     .gogo-image { z-index: 5; }
     
-    /* リール内画像：1:1サイズ、60px×60px */
+    /* リール内画像：1:1サイズ（60px×60px） */
     .numbers img { width: 100%; height: 60px; object-fit: contain; }
     
-    /* バックボタンセクション */
+    /* バックボタン */
     .back-button-container {
       width: 100%; padding: 10px; border-radius: 8px;
       background-color: #222222; margin-top: 10px;
@@ -139,16 +140,15 @@
       background: none; border: none; font-size: 1.5em; cursor: pointer; color: #000;
     }
     .modal-content .close-modal-btn:hover { color: #555; }
-    /* 結果ポップアップ（「第二子の性別は…」）は中央表示 */
+    /* 結果ポップアップは中央表示 */
     #resultModal .modal-content { text-align: center; }
     
-    /* 遊び方モーダル：新たな説明文 */
+    /* 遊び方モーダルの追加説明文 */
     #helpModal .instructions {
       margin-top: 10px;
       font-size: 0.95em;
       line-height: 1.4em;
     }
-    /* インライン画像は文字より少し大きめ */
     #helpModal .instructions img {
       vertical-align: middle;
       height: 1.2em;
@@ -161,7 +161,7 @@
       .modal-content { width: 90%; max-width: 400px; }
     }
     
-    /* 点滅用のオーバーレイ（初期非表示） */
+    /* 点滅用オーバーレイ（初期非表示） */
     #blinkOverlay {
       position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
@@ -174,16 +174,15 @@
 </head>
 <body>
 
-  <!-- （任意の）通知エリア -->
-  <div id="notification"></div>
-
+  <!-- （通知エリアは省略） -->
+  
   <!-- 営業時間外メッセージ -->
   <div id="closed-message" style="display:none;">
     営業時間外です。<br>AM8時からPM12時にお越しください。
   </div>
 
   <div class="slot-machine" id="slotMachine">
-    <!-- ディスプレイ -->
+    <!-- ディスプレイ部 -->
     <div class="slot-display">
       <h2>BIG CHANCE!</h2>
       <div id="spinCountContainer">
@@ -192,14 +191,14 @@
       <div id="displayMessage">6.11％の確率で何かが起こる!!</div>
     </div>
 
-    <!-- 本体下部：レバー + リール×3 -->
+    <!-- 本体下部：レバー＆リール -->
     <div class="machine-body">
       <!-- レバー -->
       <div class="lever-container">
         <div class="lever-shaft"></div>
         <div class="lever-ball" id="leverBall"></div>
       </div>
-      <!-- リールとSTOPボタン（今回はユーザ操作で停止しません） -->
+      <!-- リール部 -->
       <div class="reels-stop-area">
         <div class="reel-stop">
           <div class="reel" id="reel1">
@@ -273,10 +272,10 @@
     window.addEventListener('DOMContentLoaded', () => {
       // --- 変数宣言 ---
       let spinCount = 0;
-      // ※勝ち回数は非表示のため変数自体は利用しません
-      let finalResults = ['bell.png', 'bar.png', 'animal.png']; // 初期状態は勝ちにならないようランダム
-      let isGogoActive = false;  // GOGO表示中かどうか
-      let pierrotTriggered = false; // pierrotによる勝ちが発生したかどうか
+      // 初期状態は勝ちにならないよう、既定の最終結果は安全な画像群にしておく
+      let finalResults = ['bell.png','bar.png','animal.png'];
+      let isGogoActive = false;    // GOGO表示中かどうか
+      let pierrotTriggered = false; // pierrot勝ちが発生したかどうか
 
       const spinCountText = document.getElementById('spinCountText');
       const displayMessage = document.getElementById('displayMessage');
@@ -298,7 +297,7 @@
       const resultModal = document.getElementById('resultModal');
       const closeResultModalBtn = document.getElementById('closeResultModal');
 
-      // 各リールの画像リスト
+      // 各リールに表示する画像リスト
       const reelImages = {
         reel1: ['bell.png','7.png','pierrot.png','0.png','cherry.png','bar.png','animal.png'],
         reel2: ['bell.png','7.png','pierrot.png','cherry.png','bar.png','3.png','animal.png'],
@@ -309,21 +308,20 @@
       let reelPos = [0, 0, 0];
       let reelTimer = [null, null, null];
       const imageHeight = 60;
-      const reelHeight = imageHeight * 7 * 4; // 7枚×4回
+      const reelHeight = imageHeight * 7 * 4;
       const scrollSpeed = 60;
 
-      /* --- 初期はランダム（必ず勝ちにならない画像） --- */
+      /* 初回アクセス時の初期表示は安全な画像にする（例：各リールで固定表示） */
       function fillInitialReels() {
-        // 各リールにランダムな画像（[7,7,7]ではないもの）をセット
-        fillReelImages(numbers1, reelImages.reel1);
-        fillReelImages(numbers2, reelImages.reel2);
-        fillReelImages(numbers3, reelImages.reel3);
+        // 各リールには勝ちにならない画像を固定表示
+        fillReelImages(numbers1, ['bell.png']);
+        fillReelImages(numbers2, ['bar.png']);
+        fillReelImages(numbers3, ['animal.png']);
       }
-
       function fillReelImages(container, images) {
         const repeatTimes = 4;
         const items = [];
-        for (let r = 0; r < repeatTimes; r++) {
+        for (let r = 0; r < repeatTimes; r++){
           images.forEach(img => items.push(img));
         }
         container.innerHTML = '';
@@ -341,18 +339,10 @@
       }
 
       /* --- ヘルプ／結果モーダル制御 --- */
-      function showHelpModal() {
-        helpModal.style.display = 'flex';
-      }
-      function hideHelpModal() {
-        helpModal.style.display = 'none';
-      }
-      function showResultModal() {
-        resultModal.style.display = 'flex';
-      }
-      function hideResultModal() {
-        resultModal.style.display = 'none';
-      }
+      function showHelpModal() { helpModal.style.display = 'flex'; }
+      function hideHelpModal() { helpModal.style.display = 'none'; }
+      function showResultModal() { resultModal.style.display = 'flex'; }
+      function hideResultModal() { resultModal.style.display = 'none'; }
 
       /* --- GOGO切替 --- */
       function showGogo() {
@@ -373,7 +363,7 @@
         const interval = setInterval(() => {
           overlay.style.opacity = (overlay.style.opacity == 0 ? 1 : 0);
           count++;
-          if (count >= times * 2) { // 2回の点滅（on/offが1回とカウント）
+          if (count >= times * 2) { // on/off を1回とカウント
             clearInterval(interval);
             overlay.style.opacity = 0;
             if (callback) callback();
@@ -383,15 +373,13 @@
 
       /* --- 自動逆回転処理 --- */
       function autoReverseSpin(callback) {
-        // 各リールをゆっくり逆回転させ、最終的に各リールが7.pngに合わせる
         let reverseTimers = [null, null, null];
         for (let idx = 0; idx < 3; idx++) {
           reverseTimers[idx] = setInterval(() => {
-            reelPos[idx] -= 5; // 小さめの速度で逆回転
+            reelPos[idx] -= 5;
             if (reelPos[idx] < 0) { reelPos[idx] += reelHeight; }
             const container = [numbers1, numbers2, numbers3][idx];
             container.style.transform = `translateY(-${reelPos[idx]}px)`;
-            // 判定：リール内のどこかで7.pngが中央（位置 = imageHeight）に近いか
             const allDivs = container.querySelectorAll('div');
             let bestIndex = 0, minDistance = Infinity;
             for (let i = 0; i < allDivs.length; i++) {
@@ -401,19 +389,14 @@
               if (src === '7.png') {
                 const desiredOffset = i * imageHeight - imageHeight;
                 const distance = Math.abs(desiredOffset - reelPos[idx]);
-                if (distance < minDistance) {
-                  minDistance = distance;
-                  bestIndex = i;
-                }
+                if (distance < minDistance) { minDistance = distance; bestIndex = i; }
               }
             }
-            // もし十分近づいたら停止
             if (minDistance < 5) {
               clearInterval(reverseTimers[idx]);
               reelPos[idx] = bestIndex * imageHeight - imageHeight;
               container.style.transform = `translateY(-${reelPos[idx]}px)`;
             }
-            // チェック：全リール停止時にコールバック
             if (!reverseTimers[0] && !reverseTimers[1] && !reverseTimers[2]) {
               if (callback) callback();
             }
@@ -427,36 +410,35 @@
         startSpin();
       }
       function startSpin() {
-        // ユーザ操作によるスピン開始。回転数を増やす
         spinCount++;
         spinCountText.textContent = `回転数：${spinCount}`;
         displayMessage.textContent = "";
-        // クリア：GOGO状態とpierrotフラグ
+        // 初期状態からは、GOGO状態を解除し、pierrot判定もリセット
         hideGogo();
         pierrotTriggered = false;
-        // 抽選
+        // 抽選処理
         let rand = Math.random();
         console.log("Spin rand:", rand);
         if (rand < 0.0611) {
-          // 6.11%の確率で[0,3,6]を揃える → GOGO表示
+          // 6.11%の確率で[0,3,6]に → その結果、GOGO表示
           finalResults = ['0.png', '3.png', '6.png'];
           showGogo();
         } else {
-          // それ以外はランダム（勝ちにはならない）
           finalResults = [
             getRandomImage('reel1'),
             getRandomImage('reel2'),
             getRandomImage('reel3')
           ];
         }
-        // 各リール回転開始
-        for (let i = 0; i < 3; i++) {
-          startReel(i);
-        }
+        // 各リールの回転開始
+        for (let i = 0; i < 3; i++) { startReel(i); }
+        // ストップボタンを有効化
+        stopBtn1.disabled = false;
+        stopBtn2.disabled = false;
+        stopBtn3.disabled = false;
       }
       function getRandomImage(reel) {
         const images = reelImages[reel];
-        // 単純なランダム選択
         return images[Math.floor(Math.random() * images.length)];
       }
       function startReel(idx) {
@@ -470,61 +452,65 @@
           container.style.transform = `translateY(-${reelPos[idx]}px)`;
         }, 20);
       }
-      // ユーザ操作のSTOPボタンは無効（自動停止）
-      function stopAllReels(callback) {
-        for (let i = 0; i < 3; i++) {
-          clearInterval(reelTimer[i]);
-          isSpinningFlag[i] = false;
-          // 各リールを最終位置に調整（通常のstop処理と同様）
-          const container = [numbers1, numbers2, numbers3][i];
-          const allDivs = container.querySelectorAll('div');
-          let bestIndex = 0;
-          let minDistance = Infinity;
-          for (let j = 0; j < allDivs.length; j++) {
-            const img = allDivs[j].querySelector('img');
-            if (!img) continue;
-            const src = img.getAttribute('src').split('/').pop();
-            if (src === finalResults[i]) {
-              const desiredOffset = j * imageHeight - imageHeight;
-              const distance = Math.abs(desiredOffset - reelPos[i]);
-              if (distance < minDistance) { minDistance = distance; bestIndex = j; }
-            }
+      // ストップボタンのイベント
+      stopBtn1.addEventListener('click', () => { stopReel(0, stopBtn1); });
+      stopBtn2.addEventListener('click', () => { stopReel(1, stopBtn2); });
+      stopBtn3.addEventListener('click', () => { stopReel(2, stopBtn3); });
+      function stopReel(idx, btn) {
+        if (!isSpinningFlag[idx]) return;
+        clearInterval(reelTimer[idx]);
+        isSpinningFlag[idx] = false;
+        btn.disabled = true;
+        const container = [numbers1, numbers2, numbers3][idx];
+        const allDivs = container.querySelectorAll('div');
+        allDivs.forEach(div => div.classList.remove('boldNumber'));
+        let bestIndex = 0, minDistance = Infinity;
+        for (let i = 0; i < allDivs.length; i++){
+          const img = allDivs[i].querySelector('img');
+          if (!img) continue;
+          const src = img.getAttribute('src').split('/').pop();
+          if (src === finalResults[idx]) {
+            const desiredOffset = i * imageHeight - imageHeight;
+            const distance = Math.abs(desiredOffset - reelPos[idx]);
+            if (distance < minDistance) { minDistance = distance; bestIndex = i; }
           }
-          reelPos[i] = bestIndex * imageHeight - imageHeight;
-          container.style.transform = `translateY(-${reelPos[i]}px)`;
         }
-        if (callback) callback();
+        reelPos[idx] = bestIndex * imageHeight - imageHeight;
+        container.style.transform = `translateY(-${reelPos[idx]}px)`;
+        allDivs[bestIndex].classList.add('boldNumber');
+        // すべてのリール停止時に結果チェック
+        if (!isSpinningFlag[0] && !isSpinningFlag[1] && !isSpinningFlag[2]) {
+          checkResult();
+        }
       }
       function checkResult() {
         console.log("Final results:", finalResults);
-        // もし[0,3,6]が揃ってGOGO状態なら、さらに40%でpierrot勝ちに移行
+        // もし[0,3,6]が揃ってかつGOGO状態なら、さらに40％で pierrot勝ちに移行
         if (finalResults[0]==='0.png' && finalResults[1]==='3.png' && finalResults[2]==='6.png' && isGogoActive) {
           let rand = Math.random();
           console.log("GOGO extra chance rand:", rand);
           if (rand < 0.4) {
-            // pierrot勝ち発生
             finalResults = ['pierrot.png','pierrot.png','pierrot.png'];
             pierrotTriggered = true;
           }
         }
         if (pierrotTriggered) {
-          // pierrot.pngが揃ったら点滅→逆回転で[7,7,7]に
+          // pierrot勝ちなら点滅→逆回転→最終的に[7,7,7]に
           displayMessage.textContent = "当たり";
           blinkScreen(2, () => {
             autoReverseSpin(() => {
-              // 自動逆回転完了後、最終結果は[7,7,7]になっている前提
               displayMessage.textContent = "";
               showResultModal();
             });
           });
         } else {
-          // 勝ちでなければ通常結果表示（ここでは何も表示しない）
+          // 通常の場合は、特に勝ちメッセージは表示しない
           displayMessage.textContent = "";
         }
       }
-
+      
       /* --- イベントリスナー --- */
-      // レバー操作（PC・タッチ両対応）
+      // レバー操作（PC・タッチ対応）
       leverBall.addEventListener('mousedown', e => { e.preventDefault(); handleLeverPress(); });
       leverBall.addEventListener('mouseup', () => { leverBall.classList.remove('pressed'); });
       leverBall.addEventListener('mouseleave', () => { leverBall.classList.remove('pressed'); });
@@ -532,40 +518,19 @@
       leverBall.addEventListener('touchend', () => { leverBall.classList.remove('pressed'); });
       leverBall.addEventListener('touchcancel', () => { leverBall.classList.remove('pressed'); });
       
-      // ストップボタン（今回はユーザ操作不要なので無効）
-      stopBtn1.addEventListener('click', () => { });
-      stopBtn2.addEventListener('click', () => { });
-      stopBtn3.addEventListener('click', () => { });
+      // ストップボタンは上記で個別に設定済み
       
-      // 自動停止（一定時間後に全リール停止し結果チェック）
-      function autoStop() {
-        setTimeout(() => {
-          stopAllReels(() => { checkResult(); });
-        }, 2000); // 例：2秒後に自動停止
-      }
-      
-      // レバー操作後、開始して自動停止
-      function startSpinWithAutoStop() {
-        startSpin();
-        autoStop();
-      }
-      
-      // 初回は自動でリールはランダム状態（勝ちにならない）
-      fillInitialReels();
-      
-      // ヘルプモーダル関連
+      // ヘルプ／結果モーダル関連
       closeHelpModalBtn.addEventListener('click', hideHelpModal);
       backButton.addEventListener('click', showHelpModal);
       closeResultModalBtn.addEventListener('click', hideResultModal);
       
-      // 初回画面では何も当選していない状態にするため、spinCountは0
+      // 初回表示は安全な状態になるように初期リールを固定表示
+      fillInitialReels();
       spinCountText.textContent = `回転数：0`;
       displayMessage.textContent = "6.11％の確率で何かが起こる!!";
       
-      // 例として、レバー操作時は startSpinWithAutoStop() を呼ぶ（実際はユーザ操作で開始）
-      leverBall.addEventListener('click', () => { startSpinWithAutoStop(); });
-      
-      // ※営業時間チェック等は省略（必要なら追加してください）
+      // ※必要に応じて営業時間チェック等も追加してください
     });
   </script>
 </body>

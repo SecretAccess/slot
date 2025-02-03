@@ -42,6 +42,8 @@
     /* 回転数のみ中央揃え。当選回数は非表示 */
     #spinCountContainer { display: flex; justify-content: center; }
     #spinCountText { font-size: 1.2em; }
+    /* 当選回数は非表示 */
+    #jackpotCountText { display: none; }
     #displayMessage { min-height: 20px; font-size: 1em; margin-top: 5px; }
     /* --- 本体下部：レバー＆リール --- */
     .machine-body {
@@ -290,7 +292,7 @@
       const resultModal = document.getElementById('resultModal');
       const closeResultModalBtn = document.getElementById('closeResultModal');
 
-      // 初期状態で結果ポップアップが出ないようにする
+      // 初回アクセス時、結果ポップアップは必ず非表示（念のため）
       resultModal.style.display = "none";
 
       // 各リールに表示する画像リスト（※ここでは一部順序を変更しています）
@@ -443,10 +445,12 @@
             }
             if (minDistance < 5) {
               clearInterval(reverseTimers[idx]);
+              reverseTimers[idx] = null;
               reelPos[idx] = bestIndex * imageHeight - imageHeight;
               container.style.transform = `translateY(-${reelPos[idx]}px)`;
             }
-            if (!reverseTimers[0] && !reverseTimers[1] && !reverseTimers[2]) {
+            // 全てのタイマーがnullになったらコールバック
+            if (reverseTimers.every(timer => timer === null)) {
               if (callback) callback();
             }
           }, 50);
@@ -478,14 +482,14 @@
             finalResults = ['0.png', '3.png', '6.png'];
             console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
             showGogo();
-            // この場合はGOGO表示のみで、結果ポップアップは出さない
+            // この場合はGOGO表示のみ（おめでとうポップは出さない）
           } else {
             // 負け組：安全な組み合わせに固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
             console.log('Draw result: Losing combination');
           }
         } else {
-          // GOGO表示中：40%の確率でpierrotイベントを発生
+          // GOGO表示中：40%の確率でpierrotイベントを発生させる
           if (rand < 0.4) {
             finalResults = ['pierrot.png', 'pierrot.png', 'pierrot.png'];
             console.log('Draw result: Pierrot event triggered');
@@ -517,9 +521,7 @@
         if (reelTimer[idx]) clearInterval(reelTimer[idx]);
         reelTimer[idx] = setInterval(() => {
           reelPos[idx] += scrollSpeed;
-          if (reelPos[idx] > reelHeight) {
-            reelPos[idx] %= reelHeight;
-          }
+          if (reelPos[idx] > reelHeight) { reelPos[idx] %= reelHeight; }
           container.style.transform = `translateY(-${reelPos[idx]}px)`;
         }, 20);
         console.log(`Reel ${idx+1} started spinning`);

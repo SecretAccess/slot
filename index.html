@@ -42,7 +42,6 @@
     /* 回転数のみ中央揃え。当選回数は非表示 */
     #spinCountContainer { display: flex; justify-content: center; }
     #spinCountText { font-size: 1.2em; }
-    /* 当選回数は非表示 */
     #jackpotCountText { display: none; }
     #displayMessage { min-height: 20px; font-size: 1em; margin-top: 5px; }
     /* --- 本体下部：レバー＆リール --- */
@@ -167,7 +166,6 @@
   <!-- 営業時間外メッセージ -->
   <div id="closed-message" style="display: none;">
     <br>
-    
   </div>
 
   <div class="slot-machine" id="slotMachine">
@@ -236,9 +234,9 @@
       <div class="instructions">
         <p>
           <img src="images/pierrot.png" alt="pierrot"> <img src="images/pierrot.png" alt="pierrot"> <img src="images/pierrot.png" alt="pierrot">
-          を揃えると男の子が、<br>
+          が揃うと男の子が、<br>
           <img src="images/7.png" alt="7"> <img src="images/7.png" alt="7"> <img src="images/7.png" alt="7">
-          を揃えると女の子が生まれることを意味します。
+          が揃うと女の子が生まれることを意味します。
         </p>
       </div>
     </div>
@@ -265,6 +263,8 @@
       let finalResults = ['bell.png', 'bar.png', 'animal.png'];
       // GOGO状態（初期は未表示）
       let isGogoActive = false;
+      // アニメーション処理中はレバー操作を無効にするフラグ
+      let isAnimating = false;
 
       const spinCountText = document.getElementById('spinCountText');
       const jackpotCountText = document.getElementById('jackpotCountText');
@@ -449,7 +449,7 @@
               reelPos[idx] = bestIndex * imageHeight - imageHeight;
               container.style.transform = `translateY(-${reelPos[idx]}px)`;
             }
-            // 全てのタイマーがnullになったらコールバック
+            // 全てのタイマーがnullなら
             if (reverseTimers.every(timer => timer === null)) {
               if (callback) callback();
             }
@@ -457,8 +457,15 @@
         }
       }
 
+      // アニメーション処理中はレバー操作を無効にするためのフラグ
+      let isAnimating = false;
+
       // レバー押下処理
       function handleLeverPress() {
+        if (isAnimating) {
+          console.log('Animation in progress; lever input ignored.');
+          return;
+        }
         leverBall.classList.add('pressed');
         console.log('Lever pressed - .pressed class added');
         startSlotIfNotSpinning();
@@ -482,7 +489,7 @@
             finalResults = ['0.png', '3.png', '6.png'];
             console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
             showGogo();
-            // この場合はGOGO表示のみ（おめでとうポップは出さない）
+            // この場合はGOGO表示のみ（結果ポップアップは出さない）
           } else {
             // 負け組：安全な組み合わせに固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
@@ -493,6 +500,8 @@
           if (rand < 0.4) {
             finalResults = ['pierrot.png', 'pierrot.png', 'pierrot.png'];
             console.log('Draw result: Pierrot event triggered');
+            // pierrotイベント発生時、アニメーション処理中はレバー操作無効
+            isAnimating = true;
           } else {
             // それ以外は負け組に固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
@@ -574,7 +583,7 @@
         const [r1, r2, r3] = finalResults;
         console.log('Checking result:', finalResults);
         if (!isGogoActive) {
-          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみ（ポップアップは出さない）
+          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみ（結果ポップアップは出さない）
           if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
             displayMessage.textContent = "当たり";
           } else {
@@ -585,10 +594,16 @@
         // GOGO状態中の場合
         if (r1 === 'pierrot.png' && r2 === 'pierrot.png' && r3 === 'pierrot.png') {
           displayMessage.textContent = "当たり";
+          // pierrotイベント発生時、15秒間レバー操作を無効にする（isAnimatingフラグで制御）
+          isAnimating = true;
           blinkScreen(2, function(){
             autoReverseSpin(function(){
               displayMessage.textContent = "";
               showResultModal();
+              // 15秒後にレバー操作を再有効化する
+              setTimeout(function(){
+                isAnimating = false;
+              }, 15000);
             });
           });
           return;

@@ -437,7 +437,7 @@
       // --- 変数宣言 ---
       let spinCount = 0;
       let jackpotCount = 0;
-      // 初期状態は安全な結果に（アクセス時におめでとうポップが表示されないよう）
+      // 初期状態は安全な結果に（おめでとうポップが表示されないように）
       let finalResults = ['bell.png', 'bar.png', 'animal.png'];
       // GOGO状態（初期は未表示）
       let isGogoActive = false;
@@ -515,7 +515,6 @@
       }
       function updateSpinCountDisplay() {
         spinCountText.textContent = `回転数：${spinCount}`;
-        // 当選回数は非表示
       }
       function fillReelImages(container, images) {
         const repeatTimes = 4;
@@ -542,11 +541,10 @@
         fillReelImages(numbers2, reelImages.reel2);
         fillReelImages(numbers3, reelImages.reel3);
       }
-      // 初回アクセス時は、安全な画像で固定表示（左: bell.png, 中央: bar.png, 右: animal.png）
+      // 初回アクセス時は fillAllReels() を実行（固定表示ではなく、各リールがリール画像リストに沿った状態）
+      // ※これにより、各リールに3つ同じ絵柄が並ぶことはなくなります
       function fillInitialReels() {
-        fillReelImages(numbers1, ['bell.png']);
-        fillReelImages(numbers2, ['bar.png']);
-        fillReelImages(numbers3, ['animal.png']);
+        fillAllReels();
       }
 
       // ヘルプ／結果モーダル関連
@@ -778,7 +776,7 @@
             return;
           }
         }
-        // また、すでに [7,7,7] が揃っている場合
+        // すでに [7,7,7] が揃っている場合
         if (r1 === '7.png' && r2 === '7.png' && r3 === '7.png') {
           displayMessage.textContent = "当たり";
           showResultModal();
@@ -827,8 +825,8 @@
         console.log('Outside business hours. Slot machine hidden.');
       } else {
         initializeCounts();
-        // 初回アクセス時は安全な画像（左: bell.png, 中央: bar.png, 右: animal.png）を固定表示
-        fillInitialReels();
+        // 初回アクセス時は、fillAllReels() により各リールにリール画像リストに沿った画像を表示する
+        fillAllReels();
         console.log('Page initialized and reels filled');
       }
     });

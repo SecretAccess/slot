@@ -363,7 +363,7 @@
         fillReelImages(numbers2, reelImages.reel2);
         fillReelImages(numbers3, reelImages.reel3);
       }
-      // 初回アクセス時は、リール画像リストに沿った表示を行う（各リールにランダムな配置になる）
+      // 初回アクセス時は、リール画像リストに沿った表示を行う
       function fillInitialReels() {
         fillAllReels();
       }
@@ -473,19 +473,19 @@
             finalResults = ['0.png', '3.png', '6.png'];
             console.log('Draw result: Jackpot [0.png, 3.png, 6.png]');
             showGogo();
-            // この場合は勝利アクションは GOGO 表示のみ（おめでとうポップは表示しない）
+            // この場合は勝利アクションはGOGO表示のみ（おめでとうポップは表示しない）
           } else {
-            // 負け組：常に安全な組み合わせにする（例えば [bell.png, bar.png, animal.png]）
+            // 負け組：安全な組み合わせに固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
             console.log('Draw result: Losing combination');
           }
         } else {
-          // GOGO表示中：40%の確率で pierrot イベントを発生させる
+          // GOGO表示中：40%の確率でpierrotイベントを発生させる
           if (rand < 0.4) {
             finalResults = ['pierrot.png', 'pierrot.png', 'pierrot.png'];
             console.log('Draw result: Pierrot event triggered');
           } else {
-            // それ以外は負け組にする
+            // それ以外は負け組に固定
             finalResults = ['bell.png', 'bar.png', 'animal.png'];
             console.log('Draw result: Losing combination (GOGO active)');
           }
@@ -567,7 +567,7 @@
         const [r1, r2, r3] = finalResults;
         console.log('Checking result:', finalResults);
         if (!isGogoActive) {
-          // GOGO未表示状態では、0,3,6が揃った場合はGOGOが表示されるだけで、ポップアップは出さない
+          // GOGO未表示時、0,3,6が揃った場合はGOGO表示のみでポップアップは出さない
           if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
             displayMessage.textContent = "当たり";
           } else {
@@ -586,7 +586,7 @@
           });
           return;
         }
-        // 万が一7.pngが揃った場合（ここは通常発生しないはず）
+        // 万が一7.pngが揃った場合（通常は発生しない）
         if (r1 === '7.png' && r2 === '7.png' && r3 === '7.png') {
           displayMessage.textContent = "当たり";
           showResultModal();
@@ -635,7 +635,7 @@
         console.log('Outside business hours. Slot machine hidden.');
       } else {
         initializeCounts();
-        // 初回アクセス時は fillAllReels() でリール画像リストに沿った状態にする
+        // 初回アクセス時は、fillAllReels() を実行してリール画像リストに沿った状態にする
         fillAllReels();
         console.log('Page initialized and reels filled');
       }

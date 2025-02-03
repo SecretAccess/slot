@@ -179,7 +179,7 @@
         <div id="spinCountText">回転数：0</div>
         <div id="jackpotCountText">当選回数：0</div>
       </div>
-      <div id="displayMessage">6.11％の確率で何かが起こる!!</div>
+      <div id="displayMessage">6.11％の確率でコウノドリがチャンスを運ぶ!!</div>
     </div>
 
     <!-- 本体下部：レバー＋リール -->
@@ -578,7 +578,7 @@
           if (r1 === '0.png' && r2 === '3.png' && r3 === '6.png') {
             displayMessage.textContent = "当たり";
           } else {
-            displayMessage.textContent = "6.11％の確率で何かが起こる!!";
+            displayMessage.textContent = "6.11％の確率でコウノドリがチャンスを運ぶ!!";
           }
           return;
         }
@@ -594,7 +594,7 @@
           return;
         }
         // それ以外は負け組
-        displayMessage.textContent = "6.11％の確率で何かが起こる!!";
+        displayMessage.textContent = "6.11％の確率でコウノドリがチャンスを運ぶ!!";
       }
 
       // --- イベントリスナー ---
